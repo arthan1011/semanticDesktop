@@ -1,4 +1,4 @@
-package sample;
+package org.arthan.semantic.desktop.sample;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
