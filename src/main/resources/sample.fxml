@@ -13,24 +13,14 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 
-<GridPane alignment="CENTER"
-          hgap="10"
-          vgap="10"
-          prefHeight="203.0"
-          prefWidth="255.0"
-          xmlns="http://javafx.com/javafx/8"
-          xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="org.arthan.semantic.desktop.sample.Controller">
+<GridPane alignment="CENTER" hgap="10" prefHeight="211.0" prefWidth="493.0" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.arthan.semantic.desktop.sample.Controller">
    <padding>
       <Insets bottom="10.0" left="25.0" right="25.0" top="25.0" />
    </padding>
    <children>
       <Text fx:id="welcome_text" strokeType="OUTSIDE" strokeWidth="0.0" text="Укажите связь" GridPane.columnSpan="2" />
       <Label text="Файл" GridPane.rowIndex="1" />
-      <TextField fx:id="fineName_field"
-                 promptText="Название файла"
-                 GridPane.columnIndex="1"
-                 GridPane.rowIndex="1" />
+      <TextField fx:id="fineName_field" prefHeight="17.0" prefWidth="331.0" promptText="Название файла" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <Label text="Label" GridPane.rowIndex="3" />
       <TextField promptText="Prompt" GridPane.columnIndex="1" GridPane.rowIndex="3" />
       <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
@@ -50,8 +40,10 @@
               <String fx:value="Opt 1" />
           </value>
       </ComboBox>
+      <Text fx:id="fileType" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="72.13671875" GridPane.columnIndex="2" GridPane.rowIndex="1" />
    </children>
    <columnConstraints>
+      <ColumnConstraints />
       <ColumnConstraints />
       <ColumnConstraints />
    </columnConstraints>
