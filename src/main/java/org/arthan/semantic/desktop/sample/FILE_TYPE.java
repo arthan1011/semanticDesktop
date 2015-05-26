@@ -8,6 +8,8 @@ import com.google.common.base.Strings;
  */
 public enum FILE_TYPE {
     MUSIC("Музыка", "mp3"),
+    DOCUMENT("Документ", "doc", "docx", "txt", "pdf", "rdf"),
+    IMAGE("Изображение", "png", "jpg", "gif"),
     UNKNOWN("Неизвестно");
 
     private String title;
