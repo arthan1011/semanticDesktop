@@ -41,12 +41,31 @@ public class Controller {
             case MUSIC:
                 addAsMusic();
                 break;
+            case DOCUMENT:
+                addDocument();
+                break;
         }
         welcome_text.setText("Ресурс добавлен");
     }
 
+    private void addDocument() {
+        String answer = HttpUtils.post(
+                "http://localhost:8080/semantic/restful/contacts/document/" + selectedContactID(),
+                "filePath=" + fineName_field.getText());
+        processAnswer(answer);
+    }
+
+    private String selectedContactID() {
+        GraphItem selected = anotherResourceCombobox.getValue();
+        String contactUri = selected.getUri();
+        String contactID = contactUri.substring(contactUri.lastIndexOf("/") + 1);
+        return contactID;
+    }
+
     private void addAsMusic() {
-        String answer = HttpUtils.post("http://localhost:8080/semantic/restful/music", "id=" + fineName_field.getText());
+        String answer = HttpUtils.post(
+                "http://localhost:8080/semantic/restful/music",
+                "id=" + fineName_field.getText());
         processAnswer(answer);
     }
 

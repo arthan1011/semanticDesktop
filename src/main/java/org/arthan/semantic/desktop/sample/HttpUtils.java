@@ -86,8 +86,11 @@ public class HttpUtils {
             if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 throw new RuntimeException();
             }
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    (conn.getInputStream())));
+            BufferedReader br = new BufferedReader(
+                new InputStreamReader(
+                    conn.getInputStream(), Charsets.UTF_8
+                )
+            );
             String result = br.readLine();
             return result;
         } catch (IOException e) {
