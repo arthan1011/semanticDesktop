@@ -143,14 +143,12 @@ public class Controller {
     }
 
     private void setPredicatesForType(FILE_TYPE type) {
-        // TODO Онтология должна определять список предикатов, ага.
-        if (type == FILE_TYPE.DOCUMENT) {
-            ObservableList<GraphItem> predicates = FXCollections.observableArrayList(
-                    new GraphItem("Кем создан", DC.creator.getURI())
-            );
 
-            predicateCombobox.setItems(predicates);
-            predicateCombobox.getSelectionModel().selectFirst();
-        }
+        List<GraphItem> items = GraphUtils.findPredicatesForType(type);
+
+        ObservableList<GraphItem> predicates = FXCollections.observableArrayList(items);
+
+        predicateCombobox.setItems(predicates);
+        predicateCombobox.getSelectionModel().selectFirst();
     }
 }

@@ -1,0 +1,61 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:arlm="http://artur.lazy-magister.org/properties#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" >
+
+	<!-- File -->
+  <rdfs:Class rdf:about="http://artur.lazy-magister.org/types/file" />
+
+  <!-- Image -->
+  <rdfs:Class rdf:about="http://artur.lazy-magister.org/types/picture">
+	  <rdfs:subClassOf rdf:resource="http://artur.lazy-magister.org/types/file"/>
+  </rdfs:Class>
+
+  <!-- Document -->
+  <rdfs:Class rdf:about="http://artur.lazy-magister.org/types/document">
+	  <rdfs:subClassOf rdf:resource="http://artur.lazy-magister.org/types/file"/>
+  </rdfs:Class>
+
+  <!-- Music -->
+  <rdfs:Class rdf:about="http://artur.lazy-magister.org/types/music">
+	  <rdfs:subClassOf rdf:resource="http://artur.lazy-magister.org/types/file"/>
+  </rdfs:Class>
+
+  <!-- Contact -->
+  <rdfs:Class rdf:about="http://artur.lazy-magister.org/types/contact">
+    <rdfs:subClassOf rdf:resource="http://artur.lazy-magister.org/types/visible"/>
+  </rdfs:Class>
+
+  <!-- Visible -->
+  <rdfs:Class rdf:about="http://artur.lazy-magister.org/types/visible" />
+
+  <!--Creator prop-->
+  <rdf:Property rdf:about="http://purl.org/dc/elements/1.1/creator">
+    <rdfs:label>Кем создан</rdfs:label>
+    <rdfs:domain rdf:resource="http://artur.lazy-magister.org/types/document" />
+    <rdfs:domain rdf:resource="http://artur.lazy-magister.org/types/picture" />
+    <rdfs:range rdf:resource="http://artur.lazy-magister.org/types/contact" />
+  </rdf:Property>
+
+  <!--Like prop-->
+  <rdf:Property rdf:about="http://artur.lazy-magister.org/properties#LIKED_BY">
+    <rdfs:label>Кому нравится</rdfs:label>
+    <rdfs:domain rdf:resource="http://artur.lazy-magister.org/types/music" />
+    <rdfs:range rdf:resource="http://artur.lazy-magister.org/types/contact" />
+  </rdf:Property>
+
+  <!-- Image prop -->
+  <rdf:Property rdf:about="http://artur.lazy-magister.org/properties#IMAGE_OF">
+    <rdfs:label>Кто изображен</rdfs:label>
+    <rdfs:domain rdf:resource="http://artur.lazy-magister.org/types/picture"/>
+    <rdfs:range rdf:resource="http://artur.lazy-magister.org/types/visible"/>
+  </rdf:Property>
+
+  <!-- Email prop -->
+  <rdf:Property rdf:about="http://artur.lazy-magister.org/properties#EMAIL">
+    <rdfs:label>Электронная почта</rdfs:label>
+    <rdfs:domain rdf:resource="http://artur.lazy-magister.org/types/contact"/>
+    <rdfs:range rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#langString"/>
+  </rdf:Property>
+</rdf:RDF>

@@ -7,17 +7,23 @@ import com.google.common.base.Strings;
  * Created by artur.shamsiev on 25.05.2015
  */
 public enum FILE_TYPE {
-    MUSIC("Музыка", "mp3"),
-    DOCUMENT("Документ", "doc", "docx", "txt", "pdf", "rdf"),
-    IMAGE("Изображение", "png", "jpg", "gif"),
-    UNKNOWN("Неизвестно");
+    MUSIC("http://artur.lazy-magister.org/types/music", "Музыка", "mp3", "flac"),
+    DOCUMENT("http://artur.lazy-magister.org/types/document", "Документ", "doc", "docx", "txt", "pdf", "rdf"),
+    IMAGE("http://artur.lazy-magister.org/types/picture", "Изображение", "png", "jpg", "gif"),
+    UNKNOWN("http://artur.lazy-magister.org/types/unknown", "Неизвестно");
 
+    private String uri;
     private String title;
     private String[] extensions;
 
-    FILE_TYPE(String title, String... extensions) {
+    FILE_TYPE(String uri, String title, String... extensions) {
+        this.uri = uri;
         this.title = title;
         this.extensions = extensions;
+    }
+
+    public String getUri() {
+        return uri;
     }
 
     public String getTitle() {
