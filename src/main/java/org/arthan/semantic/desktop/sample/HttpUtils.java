@@ -1,6 +1,8 @@
 package org.arthan.semantic.desktop.sample;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.hp.hpl.jena.vocabulary.DC;
 import org.arthan.semantic.desktop.sample.model.GraphItem;
@@ -16,6 +18,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by artur.shamsiev on 25.05.2015
@@ -77,24 +80,78 @@ public class HttpUtils {
     }
 
     private static String findAllContacts() {
+        String urlString = "http://localhost:8080/semantic/restful/contacts/all";
         try {
-            URL httpUrl = new URL("http://localhost:8080/semantic/restful/contacts/all");
-            HttpURLConnection conn = (HttpURLConnection) httpUrl.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Accept", "text/plain; charset=utf-8");
-
-            if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                throw new RuntimeException();
-            }
-            BufferedReader br = new BufferedReader(
-                new InputStreamReader(
-                    conn.getInputStream(), Charsets.UTF_8
-                )
-            );
-            String result = br.readLine();
-            return result;
+            BufferedReader br = readerGET(urlString);
+            return br.readLine();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static List<GraphItem> resourcesForClasses(List<String> objectClassesUri) {
+        String paramString = Joiner.on(',').join(objectClassesUri);
+        String resourcesJSON = getResourcesJson(paramString);
+
+        return parseResourceJSON(resourcesJSON);
+    }
+
+    private static List<GraphItem> parseResourceJSON(String resourcesJSON) {
+        JSONParser parser = new JSONParser();
+        JSONObject jsonAnswer;
+        try {
+            jsonAnswer = (JSONObject) parser.parse(resourcesJSON);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        List<GraphItem> resultList = Lists.newArrayList();
+        JSONArray jArray = (JSONArray) jsonAnswer.get("resources");
+        for (Object aJArray : jArray) {
+            JSONObject contact = (JSONObject) aJArray;
+            resultList.add(new GraphItem(
+                    (String) contact.get("label"),
+                    (String) contact.get("uri")
+            ));
+        }
+        return resultList;
+    }
+
+    private static String getResourcesJson(String paramString) {
+        String resourcesJSON;
+        BufferedReader reader;
+        try {
+            reader = readerGET(
+                    "http://localhost:8080/semantic/restful/graph/class/instances",
+                    "classes=" + paramString);
+            resourcesJSON = reader.readLine();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return resourcesJSON;
+    }
+
+    private static BufferedReader readerGET(String urlString) throws IOException {
+        return readerGET(urlString, null);
+    }
+
+    private static BufferedReader readerGET(String urlString, String params) throws IOException {
+        String urlSpec = urlString;
+        if (!Strings.isNullOrEmpty(params)) {
+            urlSpec += "?" + params;
+        }
+
+        URL httpUrl = new URL(urlSpec);
+        HttpURLConnection conn = (HttpURLConnection) httpUrl.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "text/plain; charset=utf-8");
+
+        if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            throw new RuntimeException();
+        }
+        return new BufferedReader(
+                new InputStreamReader(
+                        conn.getInputStream(), Charsets.UTF_8
+                )
+        );
     }
 }

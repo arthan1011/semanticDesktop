@@ -127,15 +127,15 @@ public class Controller {
 
     private void setAnotherResourceForType(FILE_TYPE type) {
         // TODO Онтология должна определить и список третьих элементов триплета
-        if (type == FILE_TYPE.DOCUMENT) {
-            List<GraphItem> anotherResItems = HttpUtils.anotherResourcesFor(
-                    type,
-                    predicateCombobox.getValue().getUri()
-            );
-            ObservableList<GraphItem> anotherResources = FXCollections.observableArrayList(anotherResItems);
-            anotherResourceCombobox.setItems(anotherResources);
-            anotherResourceCombobox.getSelectionModel().selectFirst();
-        }
+        List<String> objectClassesUri = GraphUtils.findObjectClassesFor(
+                type,
+                predicateCombobox.getValue().getUri()
+        );
+        List<GraphItem> anotherResItems = HttpUtils.resourcesForClasses(objectClassesUri);
+
+        ObservableList<GraphItem> anotherResources = FXCollections.observableArrayList(anotherResItems);
+        anotherResourceCombobox.setItems(anotherResources);
+        anotherResourceCombobox.getSelectionModel().selectFirst();
     }
 
     private FILE_TYPE findType() {

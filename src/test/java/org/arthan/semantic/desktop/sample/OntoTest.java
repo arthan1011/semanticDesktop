@@ -23,10 +23,10 @@ public class OntoTest {
         String path = System.getProperty("user.home") + "/semantic/ontologies/client.xml";
         FileInputStream fileInputStream = new FileInputStream(path);
 
-        OntModel model = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM);
+        OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
         model.read(fileInputStream, null);
 
-        OntClass cClass = model.getOntClass("http://artur.lazy-magister.org/types/contact");
+        OntClass cClass = model.getOntClass("http://artur.lazy-magister.org/types/document");
         System.out.println(cClass.getURI());
         System.out.println(cClass.getSuperClass().getURI());
 
