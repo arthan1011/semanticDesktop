@@ -31,8 +31,9 @@ public class FileUtils {
     private static String extractExtension(String path) {
         String unixPath = toUnixPath(path);
         int lastSlash = unixPath.lastIndexOf("/");
-        int lastDot = unixPath.indexOf(".", lastSlash);
-        return unixPath.substring(lastDot + 1);
+        String fileName = unixPath.substring(lastSlash + 1);
+        int lastDot = fileName.lastIndexOf(".");
+        return fileName.substring(lastDot + 1);
     }
 
     public static InputStream ontologyInputStream() {
