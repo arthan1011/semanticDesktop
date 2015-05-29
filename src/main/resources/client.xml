@@ -9,17 +9,27 @@
 
   <!-- Image -->
   <owl:Class rdf:about="http://artur.lazy-magister.org/types/picture">
-	  <rdfs:subClassOf rdf:resource="http://artur.lazy-magister.org/types/file"/>
+    <rdfs:subClassOf rdf:resource="http://artur.lazy-magister.org/types/file"/>
+    <arlm:fileExtension>png</arlm:fileExtension>
+    <arlm:fileExtension>jpg</arlm:fileExtension>
+    <arlm:fileExtension>gif</arlm:fileExtension>
   </owl:Class>
 
   <!-- Document -->
   <owl:Class rdf:about="http://artur.lazy-magister.org/types/document">
-	  <rdfs:subClassOf rdf:resource="http://artur.lazy-magister.org/types/file"/>
+    <rdfs:subClassOf rdf:resource="http://artur.lazy-magister.org/types/file"/>
+    <arlm:fileExtension>pdf</arlm:fileExtension>
+    <arlm:fileExtension>doc</arlm:fileExtension>
+    <arlm:fileExtension>docx</arlm:fileExtension>
+    <arlm:fileExtension>txt</arlm:fileExtension>
+    <arlm:fileExtension>rdf</arlm:fileExtension>
   </owl:Class>
 
   <!-- Music -->
   <owl:Class rdf:about="http://artur.lazy-magister.org/types/music">
-	  <rdfs:subClassOf rdf:resource="http://artur.lazy-magister.org/types/file"/>
+    <rdfs:subClassOf rdf:resource="http://artur.lazy-magister.org/types/file"/>
+    <arlm:fileExtension>mp3</arlm:fileExtension>
+    <arlm:fileExtension>flac</arlm:fileExtension>
   </owl:Class>
 
   <!-- Contact -->

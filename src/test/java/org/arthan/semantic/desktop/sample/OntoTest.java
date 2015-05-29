@@ -5,6 +5,7 @@ import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import org.junit.Test;
 
@@ -29,6 +30,10 @@ public class OntoTest {
         OntClass cClass = model.getOntClass("http://artur.lazy-magister.org/types/document");
         System.out.println(cClass.getURI());
         System.out.println(cClass.getSuperClass().getURI());
+
+        ArrayList<Statement> classProps = Lists.newArrayList(cClass.listProperties());
+        classProps.stream()
+                .forEach(input -> System.out.println(input.getPredicate().getURI() + " " + input.getObject().toString()));
 
         ExtendedIterator<OntProperty> allPropertiesIterator = model.listAllOntProperties();
         List<OntProperty> allProperties = Lists.newArrayList(allPropertiesIterator);
