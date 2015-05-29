@@ -7,10 +7,8 @@ import com.hp.hpl.jena.ontology.OntProperty;
 import com.hp.hpl.jena.ontology.OntResource;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import org.arthan.semantic.desktop.sample.model.GraphItem;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +19,11 @@ public class GraphUtils {
 
     private static OntModel ontModel;
 
+    /**
+     * Возвращает список предикатов (свойств), домен которых совпадает с {@code type.uri}
+     * @param type класс домена для предикатов
+     * @return список предикатов для {@code type}
+     */
     public static List<GraphItem> findPredicatesForType(FILE_TYPE type) {
         List<GraphItem> resultList;
 
@@ -48,6 +51,13 @@ public class GraphUtils {
             }).collect(Collectors.toList());
     }
 
+    /**
+     * Возвращает uri классов тех ресурсов, которые могут служить объектом в триплете, для которого
+     * субъект определяется параметром {@code type}, а предикат - параметром {@code predicateURI}
+     * @param type тип файла. Играет роль субъекта
+     * @param predicateURI uri предиката
+     * @return список uri классов тех ресурсов, которые могут служить в качестве объекта в триплете
+     */
     public static List<String> findObjectClassesFor(FILE_TYPE type, String predicateURI) {
         ontModel = ModelFactory.createOntologyModel();
         ontModel.read(FileUtils.ontologyInputStream(), null);
@@ -56,10 +66,11 @@ public class GraphUtils {
 
         List<OntProperty> propsForDomain = findPropertiesForDomain(fileClass);
 
-        List<String> objectClassesUri = propsForDomain.stream()
+        return propsForDomain.stream()
+                .filter(prop -> predicateURI.equals(prop.getURI()))
                 .flatMap(input -> Lists.newArrayList(input.listRange()).stream())
                 .map(Resource::getURI)
                 .collect(Collectors.toList());
-        return objectClassesUri;
     }
+
 }

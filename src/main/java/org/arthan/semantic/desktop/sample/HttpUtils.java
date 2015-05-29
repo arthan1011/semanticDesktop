@@ -4,7 +4,6 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.hp.hpl.jena.vocabulary.DC;
 import org.arthan.semantic.desktop.sample.model.GraphItem;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -18,19 +17,18 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by artur.shamsiev on 25.05.2015
  */
 public class HttpUtils {
 
-    public static String post(String url, String params) {
+    private static String httpWithBodyParams(String url, String params, String requestMethod) {
         try {
             URL httpUrl = new URL(url);
             HttpURLConnection conn = (HttpURLConnection) httpUrl.openConnection();
             conn.setDoOutput(true);
-            conn.setRequestMethod("POST");
+            conn.setRequestMethod(requestMethod);
             conn.setRequestProperty("Accept", "text/plain; charset=utf-8");
 
             try (DataOutputStream dos = new DataOutputStream(conn.getOutputStream())) {
@@ -38,6 +36,7 @@ public class HttpUtils {
             }
 
             if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                System.out.println(new BufferedReader(new InputStreamReader(conn.getInputStream())).readLine());
                 throw new RuntimeException();
             }
             BufferedReader br = new BufferedReader(new InputStreamReader(
@@ -51,44 +50,11 @@ public class HttpUtils {
         }
     }
 
-    public static List<GraphItem> anotherResourcesFor(FILE_TYPE type, String uri) {
-        if (type == FILE_TYPE.DOCUMENT && uri.equals(DC.creator.getURI())) {
-            return allContacts();
-        }
-        return Lists.newArrayList();
-    }
-
-    private static List<GraphItem> allContacts() {
-        List<GraphItem> resultList = Lists.newArrayList();
-        String contactsJSON = findAllContacts();
-        JSONParser parser = new JSONParser();
-        JSONObject jsonAnswer;
-        try {
-            jsonAnswer = (JSONObject) parser.parse(contactsJSON);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        JSONArray jArray = (JSONArray) jsonAnswer.get("contacts");
-        for (Object aJArray : jArray) {
-            JSONObject contact = (JSONObject) aJArray;
-            resultList.add(new GraphItem(
-                    (String) contact.get("label"),
-                    (String) contact.get("uri")
-            ));
-        }
-        return resultList;
-    }
-
-    private static String findAllContacts() {
-        String urlString = "http://localhost:8080/semantic/restful/contacts/all";
-        try {
-            BufferedReader br = readerGET(urlString);
-            return br.readLine();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
+    /**
+     * Возвращает список ресурсов, типы которых находятся в списке {@code objectClassesUri}
+     * @param objectClassesUri список идентификаторов классов
+     * @return список ресурсов для всех типов в {@code objectClassesUri}
+     */
     public static List<GraphItem> resourcesForClasses(List<String> objectClassesUri) {
         String paramString = Joiner.on(',').join(objectClassesUri);
         String resourcesJSON = getResourcesJson(paramString);
@@ -130,10 +96,6 @@ public class HttpUtils {
         return resourcesJSON;
     }
 
-    private static BufferedReader readerGET(String urlString) throws IOException {
-        return readerGET(urlString, null);
-    }
-
     private static BufferedReader readerGET(String urlString, String params) throws IOException {
         String urlSpec = urlString;
         if (!Strings.isNullOrEmpty(params)) {
@@ -153,5 +115,14 @@ public class HttpUtils {
                         conn.getInputStream(), Charsets.UTF_8
                 )
         );
+    }
+
+    public static String addFile(String fileName, String predicateUri, String objectUri) {
+        String params = Joiner.on("&").join(
+                "filePath=" + fileName,
+                "predicateURI=" + predicateUri,
+                "objectURI=" + objectUri);
+        String urlString = "http://localhost:8080/semantic/restful/graph/file";
+        return httpWithBodyParams(urlString, params, "POST");
     }
 }

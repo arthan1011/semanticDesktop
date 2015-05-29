@@ -1,6 +1,5 @@
 package org.arthan.semantic.desktop.sample;
 
-import com.hp.hpl.jena.vocabulary.DC;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -37,36 +36,28 @@ public class Controller {
             return;
         }
 
-        switch (findType()) {
-            case MUSIC:
-                addAsMusic();
-                break;
-            case DOCUMENT:
-                addDocument();
-                break;
-        }
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Добавить");
+        alert.setHeaderText(null);
+        String contentText = new StringBuilder()
+                .append("Имя файла: ").append(fineName_field.getText()).append("\n")
+                .append("Предикат:  ").append(predicateCombobox.getValue().getUri()).append("\n")
+                .append("Объект:    ").append(anotherResourceCombobox.getValue().getUri()).append("\n")
+                .toString();
+        alert.setContentText(contentText);
+
+        alert.showAndWait();
+
+        String answer = HttpUtils.addFile(
+                fineName_field.getText(),
+                predicateCombobox.getValue().getUri(),
+                anotherResourceCombobox.getValue().getUri()
+        );
+
+        processAnswer(answer);
+
         welcome_text.setText("Ресурс добавлен");
-    }
-
-    private void addDocument() {
-        String answer = HttpUtils.post(
-                "http://localhost:8080/semantic/restful/contacts/document/" + selectedContactID(),
-                "filePath=" + fineName_field.getText());
-        processAnswer(answer);
-    }
-
-    private String selectedContactID() {
-        GraphItem selected = anotherResourceCombobox.getValue();
-        String contactUri = selected.getUri();
-        String contactID = contactUri.substring(contactUri.lastIndexOf("/") + 1);
-        return contactID;
-    }
-
-    private void addAsMusic() {
-        String answer = HttpUtils.post(
-                "http://localhost:8080/semantic/restful/music",
-                "id=" + fineName_field.getText());
-        processAnswer(answer);
     }
 
     private void processAnswer(String answer) {
@@ -80,7 +71,7 @@ public class Controller {
         JSONObject jo = (JSONObject) jsonAnswer.get("answer");
         String status = (String) jo.get("status");
 
-        if (status.equals("success")) {
+        if (status.equals("success") || status.equals("added")) {
             showSuccessAdditionAlert();
         }
     }
@@ -107,11 +98,6 @@ public class Controller {
         alert.showAndWait();
     }
 
-    @FXML
-    protected void anotherActionEvent(ActionEvent event) {
-        System.out.println("event happened");
-    }
-
 
     public void setFileField(String firstParam) {
         fineName_field.setText(firstParam);
@@ -126,7 +112,6 @@ public class Controller {
     }
 
     private void setAnotherResourceForType(FILE_TYPE type) {
-        // TODO Онтология должна определить и список третьих элементов триплета
         List<String> objectClassesUri = GraphUtils.findObjectClassesFor(
                 type,
                 predicateCombobox.getValue().getUri()
