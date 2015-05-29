@@ -9,6 +9,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import org.arthan.semantic.desktop.sample.model.GraphItem;
+import org.arthan.semantic.desktop.sample.utils.AlertUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -32,7 +33,7 @@ public class Controller {
     @FXML
     protected void handleAddButtonEvent(ActionEvent event) {
         if (!validInHome()) {
-            showNotInHomeAlert();
+            AlertUtils.showNotInHomeAlert();
             return;
         }
 
@@ -72,30 +73,12 @@ public class Controller {
         String status = (String) jo.get("status");
 
         if (status.equals("success") || status.equals("added")) {
-            showSuccessAdditionAlert();
+            AlertUtils.showSuccessAdditionAlert();
         }
-    }
-
-    private void showSuccessAdditionAlert() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Успешно");
-        alert.setHeaderText(null);
-        alert.setContentText("Файл успешно добавлен в семантический граф");
-
-        alert.showAndWait();
     }
 
     private boolean validInHome() {
         return fineName_field.getText().startsWith(USER_HOME);
-    }
-
-    private void showNotInHomeAlert() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Ошибка");
-        alert.setHeaderText(null);
-        alert.setContentText("Можно добавлять файлы только из домашнего каталога");
-
-        alert.showAndWait();
     }
 
 
