@@ -23,4 +23,13 @@ public class AlertUtils {
 
         alert.showAndWait();
     }
+
+    public static void showNoServerConnection() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Ошибка");
+        alert.setHeaderText(null);
+        alert.setContentText("Не могу подключиться к серверу");
+
+        alert.showAndWait();
+    }
 }

@@ -1,10 +1,13 @@
 package org.arthan.semantic.desktop.sample;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.arthan.semantic.desktop.sample.extensions.ServerConnectionException;
+import org.arthan.semantic.desktop.sample.utils.AlertUtils;
 
 import java.net.URL;
 
@@ -22,8 +25,17 @@ public class Main extends Application {
         setupStage(primaryStage);
 
         initController();
-        setup();
+        tryToSetup();
 
+    }
+
+    private void tryToSetup() {
+        try {
+            setup();
+        } catch (ServerConnectionException e) {
+            AlertUtils.showNoServerConnection();
+            Platform.exit();
+        }
     }
 
     private void setupStage(Stage primaryStage) throws java.io.IOException {

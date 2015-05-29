@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import org.arthan.semantic.desktop.sample.extensions.ServerConnectionException;
 import org.arthan.semantic.desktop.sample.model.GraphItem;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -14,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
@@ -84,19 +86,18 @@ public class HttpUtils {
 
     private static String getResourcesJson(String paramString) {
         String resourcesJSON;
-        BufferedReader reader;
         try {
-            reader = readerGET(
+
+            resourcesJSON = sendGET(
                     "http://localhost:8080/semantic/restful/graph/class/instances",
                     "classes=" + paramString);
-            resourcesJSON = reader.readLine();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return resourcesJSON;
     }
 
-    private static BufferedReader readerGET(String urlString, String params) throws IOException {
+    private static String sendGET(String urlString, String params) throws IOException {
         String urlSpec = urlString;
         if (!Strings.isNullOrEmpty(params)) {
             urlSpec += "?" + params;
@@ -107,14 +108,22 @@ public class HttpUtils {
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Accept", "text/plain; charset=utf-8");
 
-        if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+
+        int responseCode = 0;
+        try {
+            responseCode = conn.getResponseCode();
+        } catch (ConnectException e) {
+            throw new ServerConnectionException();
+        }
+
+        if (responseCode != HttpURLConnection.HTTP_OK) {
             throw new RuntimeException();
         }
         return new BufferedReader(
                 new InputStreamReader(
                         conn.getInputStream(), Charsets.UTF_8
                 )
-        );
+        ).readLine();
     }
 
     public static String addFile(String fileName, String predicateUri, String objectUri) {
