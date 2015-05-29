@@ -4,15 +4,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import org.arthan.semantic.desktop.sample.model.GraphItem;
 import org.arthan.semantic.desktop.sample.utils.AlertUtils;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.arthan.semantic.desktop.sample.utils.JsonUtils;
 
 import java.util.List;
 
@@ -37,40 +34,21 @@ public class Controller {
             return;
         }
 
+        String answer = addFile();
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Добавить");
-        alert.setHeaderText(null);
-        String contentText = new StringBuilder()
-                .append("Имя файла: ").append(fineName_field.getText()).append("\n")
-                .append("Предикат:  ").append(predicateCombobox.getValue().getUri()).append("\n")
-                .append("Объект:    ").append(anotherResourceCombobox.getValue().getUri()).append("\n")
-                .toString();
-        alert.setContentText(contentText);
+        processAnswer(answer);
+    }
 
-        alert.showAndWait();
-
-        String answer = HttpUtils.addFile(
+    private String addFile() {
+        return HttpUtils.addFile(
                 fineName_field.getText(),
                 predicateCombobox.getValue().getUri(),
                 anotherResourceCombobox.getValue().getUri()
         );
-
-        processAnswer(answer);
-
-        welcome_text.setText("Ресурс добавлен");
     }
 
     private void processAnswer(String answer) {
-        JSONParser parser = new JSONParser();
-        JSONObject jsonAnswer;
-        try {
-            jsonAnswer = (JSONObject) parser.parse(answer);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        JSONObject jo = (JSONObject) jsonAnswer.get("answer");
-        String status = (String) jo.get("status");
+        String status = JsonUtils.parseAnswer(answer);
 
         if (status.equals("success") || status.equals("added")) {
             AlertUtils.showSuccessAdditionAlert();
@@ -111,12 +89,15 @@ public class Controller {
     }
 
     private void setPredicatesForType(FILE_TYPE type) {
+        List<GraphItem> predicates = GraphUtils.findPredicatesForType(type);
+        ObservableList<GraphItem> viewPredicates = FXCollections.observableArrayList(predicates);
 
-        List<GraphItem> items = GraphUtils.findPredicatesForType(type);
-
-        ObservableList<GraphItem> predicates = FXCollections.observableArrayList(items);
-
-        predicateCombobox.setItems(predicates);
+        predicateCombobox.setItems(viewPredicates);
         predicateCombobox.getSelectionModel().selectFirst();
+    }
+
+    public void assignFilePath(String firstParam) {
+        setFileField(firstParam);
+        determineFileType();
     }
 }
