@@ -65,14 +65,14 @@ public class Controller {
     }
 
     public void determineFileType() {
-        FILE_TYPE type = findType();
+        FileType type = findType();
         fileType.setText(type.getTitle());
 
         setPredicatesForType(type);
         setAnotherResourceForType(type);
     }
 
-    private void setAnotherResourceForType(FILE_TYPE type) {
+    private void setAnotherResourceForType(FileType type) {
         List<String> objectClassesUri = GraphUtils.findObjectClassesFor(
                 type,
                 predicateCombobox.getValue().getUri()
@@ -84,15 +84,18 @@ public class Controller {
         anotherResourceCombobox.getSelectionModel().selectFirst();
     }
 
-    private FILE_TYPE findType() {
-        return FileUtils.defineType(fineName_field.getText());
+    private FileType findType() {
+        String extension = FileUtils.extractExtension(fineName_field.getText());
+        return GraphUtils.findFileType(extension);
     }
 
-    private void setPredicatesForType(FILE_TYPE type) {
-        List<GraphItem> predicates = GraphUtils.findPredicatesForType(type);
-        ObservableList<GraphItem> viewPredicates = FXCollections.observableArrayList(predicates);
+    private void setPredicatesForType(FileType type) {
 
-        predicateCombobox.setItems(viewPredicates);
+        List<GraphItem> items = GraphUtils.findPredicatesForType(type);
+
+        ObservableList<GraphItem> predicates = FXCollections.observableArrayList(items);
+
+        predicateCombobox.setItems(predicates);
         predicateCombobox.getSelectionModel().selectFirst();
     }
 

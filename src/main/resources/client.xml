@@ -7,6 +7,9 @@
 	<!-- File -->
   <owl:Class rdf:about="http://artur.lazy-magister.org/types/file" />
 
+  <!--File extension-->
+  <owl:Class rdf:about="http://artur.lazy-magister.org/types/meta/fileExtension" />
+
   <!-- Image -->
   <owl:Class rdf:about="http://artur.lazy-magister.org/types/picture">
     <rdfs:subClassOf rdf:resource="http://artur.lazy-magister.org/types/file"/>
@@ -39,6 +42,88 @@
 
   <!-- Visible -->
   <owl:Class rdf:about="http://artur.lazy-magister.org/types/visible" />
+
+  <!--RDF res-->
+  <rdf:Description about="http://artur.lazy-magister.org/meta/fileExtension/rtf">
+    <rdf:type rdf:resource="http://artur.lazy-magister.org/types/meta/fileExtension" />
+    <arlm:fileExtension>rdf</arlm:fileExtension>
+    <rdfs:label>Документ RDF</rdfs:label>
+    <arlm:forType rdf:resource="http://artur.lazy-magister.org/types/document" />
+  </rdf:Description>
+
+  <!--TXT res-->
+  <rdf:Description about="http://artur.lazy-magister.org/meta/fileExtension/txt">
+    <rdf:type rdf:resource="http://artur.lazy-magister.org/types/meta/fileExtension" />
+    <arlm:fileExtension>txt</arlm:fileExtension>
+    <rdfs:label>Документ TXT</rdfs:label>
+    <arlm:forType rdf:resource="http://artur.lazy-magister.org/types/document" />
+  </rdf:Description>
+
+  <!--DOC res-->
+  <rdf:Description about="http://artur.lazy-magister.org/meta/fileExtension/doc">
+    <rdf:type rdf:resource="http://artur.lazy-magister.org/types/meta/fileExtension" />
+    <arlm:fileExtension>docx</arlm:fileExtension>
+    <rdfs:label>Документ DOC</rdfs:label>
+    <arlm:forType rdf:resource="http://artur.lazy-magister.org/types/document" />
+  </rdf:Description>
+
+  <!--DOCX res-->
+  <rdf:Description about="http://artur.lazy-magister.org/meta/fileExtension/docx">
+    <rdf:type rdf:resource="http://artur.lazy-magister.org/types/meta/fileExtension" />
+    <arlm:fileExtension>docx</arlm:fileExtension>
+    <rdfs:label>Документ DOCX</rdfs:label>
+    <arlm:forType rdf:resource="http://artur.lazy-magister.org/types/document" />
+  </rdf:Description>
+
+  <!--MP3 res-->
+  <rdf:Description about="http://artur.lazy-magister.org/meta/fileExtension/mp3">
+    <rdf:type rdf:resource="http://artur.lazy-magister.org/types/meta/fileExtension" />
+    <arlm:fileExtension>mp3</arlm:fileExtension>
+    <rdfs:label>Музыка в формате MP3</rdfs:label>
+    <arlm:forType rdf:resource="http://artur.lazy-magister.org/types/music" />
+  </rdf:Description>
+
+  <!--FLAC res-->
+  <rdf:Description about="http://artur.lazy-magister.org/meta/fileExtension/flac">
+    <rdf:type rdf:resource="http://artur.lazy-magister.org/types/meta/fileExtension" />
+    <arlm:fileExtension>flac</arlm:fileExtension>
+    <rdfs:label>Музыка в формате FLAC</rdfs:label>
+    <arlm:forType rdf:resource="http://artur.lazy-magister.org/types/music" />
+  </rdf:Description>
+
+  <!--PDF res-->
+  <rdf:Description about="http://artur.lazy-magister.org/meta/fileExtension/pdf">
+    <rdf:type rdf:resource="http://artur.lazy-magister.org/types/meta/fileExtension" />
+    <arlm:fileExtension>pdf</arlm:fileExtension>
+    <rdfs:label>Документ PDF</rdfs:label>
+    <arlm:forType rdf:resource="http://artur.lazy-magister.org/types/document" />
+  </rdf:Description>
+
+  <!--JPG res-->
+  <rdf:Description about="http://artur.lazy-magister.org/meta/fileExtension/jpg">
+    <rdf:type rdf:resource="http://artur.lazy-magister.org/types/meta/fileExtension" />
+    <arlm:fileExtension>jpg</arlm:fileExtension>
+    <rdfs:label>Изображение JPG</rdfs:label>
+    <arlm:forType rdf:resource="http://artur.lazy-magister.org/types/picture" />
+  </rdf:Description>
+
+  <!--GIF res-->
+  <rdf:Description about="http://artur.lazy-magister.org/meta/fileExtension/gif">
+    <rdf:type rdf:resource="http://artur.lazy-magister.org/types/meta/fileExtension" />
+    <arlm:fileExtension>gif</arlm:fileExtension>
+    <rdfs:label>Изображение GIF</rdfs:label>
+    <arlm:forType rdf:resource="http://artur.lazy-magister.org/types/picture" />
+  </rdf:Description>
+
+  <!--PNG res-->
+  <rdf:Description about="http://artur.lazy-magister.org/meta/fileExtension/png">
+    <rdf:type rdf:resource="http://artur.lazy-magister.org/types/meta/fileExtension" />
+    <arlm:fileExtension>png</arlm:fileExtension>
+    <rdfs:label>Изображение PNG</rdfs:label>
+    <arlm:forType rdf:resource="http://artur.lazy-magister.org/types/picture" />
+  </rdf:Description>
+
+
 
   <!--Creator prop-->
   <owl:ObjectProperty rdf:about="http://purl.org/dc/elements/1.1/creator">

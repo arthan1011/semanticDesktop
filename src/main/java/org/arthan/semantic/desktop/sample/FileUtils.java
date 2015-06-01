@@ -23,12 +23,7 @@ public class FileUtils {
         }
     }
 
-    public static FILE_TYPE defineType(String path) {
-        String fileExtension = extractExtension(path);
-        return FILE_TYPE.forExtension(fileExtension);
-    }
-
-    private static String extractExtension(String path) {
+    public static String extractExtension(String path) {
         String unixPath = toUnixPath(path);
         int lastSlash = unixPath.lastIndexOf("/");
         String fileName = unixPath.substring(lastSlash + 1);

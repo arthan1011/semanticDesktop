@@ -6,9 +6,12 @@ import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntProperty;
 import com.hp.hpl.jena.ontology.OntResource;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import org.arthan.semantic.desktop.sample.model.GraphItem;
+import org.arthan.semantic.desktop.sample.model.Props;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,20 +20,23 @@ import java.util.stream.Collectors;
  */
 public class GraphUtils {
 
+    public static final String FILE_EXTENSION_CLASS_URI = "http://artur.lazy-magister.org/types/meta/fileExtension";
     private static OntModel ontModel;
+
+    static {
+        ontModel = ModelFactory.createOntologyModel();
+        ontModel.read(FileUtils.ontologyInputStream(), null);
+    }
 
     /**
      * Возвращает список предикатов (свойств), домен которых совпадает с {@code type.uri}
      * @param type класс домена для предикатов
      * @return список предикатов для {@code type}
      */
-    public static List<GraphItem> findPredicatesForType(FILE_TYPE type) {
+    public static List<GraphItem> findPredicatesForType(FileType type) {
         List<GraphItem> resultList;
 
-        ontModel = ModelFactory.createOntologyModel();
-        ontModel.read(FileUtils.ontologyInputStream(), null);
-
-        OntClass fileClass = ontModel.getOntClass(type.getUri());
+        OntClass fileClass = type.getTargetType();
 
         List<OntProperty> propsForDomain = findPropertiesForDomain(fileClass);
 
@@ -58,11 +64,8 @@ public class GraphUtils {
      * @param predicateURI uri предиката
      * @return список uri классов тех ресурсов, которые могут служить в качестве объекта в триплете
      */
-    public static List<String> findObjectClassesFor(FILE_TYPE type, String predicateURI) {
-        ontModel = ModelFactory.createOntologyModel();
-        ontModel.read(FileUtils.ontologyInputStream(), null);
-
-        OntClass fileClass = ontModel.getOntClass(type.getUri());
+    public static List<String> findObjectClassesFor(FileType type, String predicateURI) {
+        OntClass fileClass = type.getTargetType();
 
         List<OntProperty> propsForDomain = findPropertiesForDomain(fileClass);
 
@@ -71,6 +74,34 @@ public class GraphUtils {
                 .flatMap(input -> Lists.newArrayList(input.listRange()).stream())
                 .map(Resource::getURI)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Находит ресурс типа fileExtension соответствующего параметру {@code fileExtension}
+     * @param fileExtension расширение файла
+     * @return объект {@link FileType}
+     */
+    public static FileType findFileType(String fileExtension) {
+        OntClass extClass = ontModel.getOntClass(FILE_EXTENSION_CLASS_URI);
+        ArrayList<OntResource> extensions = Lists.newArrayList(extClass.listInstances(true));
+        List<OntResource> foundExtensions = extensions.stream()
+                .filter(input ->
+                        input.getPropertyValue(Props.fileExtension).toString().equals(fileExtension))
+                .collect(Collectors.toList());
+        if (foundExtensions.size() != 1) {
+            throw new RuntimeException("Не могу найти единственный ресурс для " + fileExtension);
+        }
+
+        return resourceToFileType(foundExtensions.get(0));
+    }
+
+    private static FileType resourceToFileType(OntResource resource) {
+        OntClass ontClass = resource.getPropertyValue(Props.forType).as(OntClass.class);
+        return new FileType(
+                resource.getPropertyValue(Props.fileExtension).toString(),
+                resource.getLabel(null),
+                ontClass
+        );
     }
 
 }

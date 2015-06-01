@@ -7,6 +7,7 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import org.arthan.semantic.desktop.sample.model.Props;
 import org.junit.Test;
 
 import java.io.FileInputStream;
@@ -70,6 +71,14 @@ public class OntoTest {
 //        OntProperty ontProperty = model.getOntProperty("http://artur.lazy-magister.org/properties#IMAGE");
 //        model.write(new FileOutputStream(path));
 //        System.out.println(ontProperty.getDomain().getURI());
+
+        OntClass extClass = model.getOntClass("http://artur.lazy-magister.org/types/meta/fileExtension");
+        ArrayList<OntResource> extensions = Lists.newArrayList(extClass.listInstances(true));
+        extensions.stream()
+                .forEach(input -> System.out.println(input.getPropertyValue(
+                        Props.fileExtension
+                )));
+
 
     }
 }
