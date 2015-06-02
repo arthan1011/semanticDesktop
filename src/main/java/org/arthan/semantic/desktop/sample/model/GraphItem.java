@@ -24,4 +24,24 @@ public class GraphItem {
     public String getUri() {
         return uri;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GraphItem graphItem = (GraphItem) o;
+
+        if (!label.equals(graphItem.label)) return false;
+        if (!uri.equals(graphItem.uri)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = label.hashCode();
+        result = 31 * result + uri.hashCode();
+        return result;
+    }
 }

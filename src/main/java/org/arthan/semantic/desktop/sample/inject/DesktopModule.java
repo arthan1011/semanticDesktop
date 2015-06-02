@@ -8,8 +8,10 @@ import org.arthan.semantic.desktop.sample.Controller;
 import org.arthan.semantic.desktop.sample.service.FileService;
 import org.arthan.semantic.desktop.sample.service.GraphService;
 import org.arthan.semantic.desktop.sample.service.HttpService;
+import org.arthan.semantic.desktop.sample.service.UserResourceService;
 import org.arthan.semantic.desktop.sample.service.impl.GraphServiceImpl;
 import org.arthan.semantic.desktop.sample.service.impl.HttpServiceImpl;
+import org.arthan.semantic.desktop.sample.service.impl.UserResourceServiceImpl;
 
 /**
  * Created by artur.shamsiev on 02.06.2015
@@ -32,5 +34,8 @@ public class DesktopModule extends AbstractModule {
 
         bind(HttpService.class)
                 .to(HttpServiceImpl.class);
+
+        bind(UserResourceService.class)
+                .to(UserResourceServiceImpl.class);
     }
 }

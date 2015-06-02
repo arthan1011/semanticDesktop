@@ -51,7 +51,7 @@ public class Main extends Application {
 
     private void setup() {
         String firstParam = getParameters().getUnnamed().get(0);
-        controller.assignFilePath(firstParam);
+        controller.setup(firstParam);
     }
 
     private void initController() {

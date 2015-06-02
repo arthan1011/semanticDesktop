@@ -1,37 +1,28 @@
 package org.arthan.semantic.desktop.sample;
 
-import com.google.inject.name.Named;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+import org.arthan.semantic.desktop.sample.model.FileResourceGuiData;
+import org.arthan.semantic.desktop.sample.model.FileTriple;
 import org.arthan.semantic.desktop.sample.model.GraphItem;
-import org.arthan.semantic.desktop.sample.service.FileService;
-import org.arthan.semantic.desktop.sample.service.GraphService;
-import org.arthan.semantic.desktop.sample.service.HttpService;
+import org.arthan.semantic.desktop.sample.service.UserResourceService;
 import org.arthan.semantic.desktop.sample.utils.AlertUtils;
 import org.arthan.semantic.desktop.sample.utils.JsonUtils;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class Controller {
     public static final String USER_HOME = System.getProperty("user.home");
 
-    GraphService graphService;
-
-    FileService fileService;
-
-    HttpService httpService;
+    UserResourceService userResourceService;
 
     @Inject
-    public Controller(GraphService graphService, FileService fileService, HttpService httpService) {
-        this.graphService = graphService;
-        this.fileService = fileService;
-        this.httpService = httpService;
+    public Controller(UserResourceService userResourceService) {
+        this.userResourceService = userResourceService;
     }
 
     @FXML
@@ -58,11 +49,7 @@ public class Controller {
     }
 
     private String addFile() {
-        return httpService.addFile(
-                fineName_field.getText(),
-                predicateCombobox.getValue().getUri(),
-                anotherResourceCombobox.getValue().getUri()
-        );
+        return userResourceService.addFile(getFileTriple());
     }
 
     private void processAnswer(String answer) {
@@ -77,47 +64,25 @@ public class Controller {
         return fineName_field.getText().startsWith(USER_HOME);
     }
 
-
-    public void setFileField(String firstParam) {
-        fineName_field.setText(firstParam);
-    }
-
-    public void determineFileType() {
-        FileType type = findType();
-        fileType.setText(type.getTitle());
-
-        setPredicatesForType(type);
-        setAnotherResourceForType(type);
-    }
-
-    private void setAnotherResourceForType(FileType type) {
-        List<String> objectClassesUri = graphService.findObjectClassesFor(
-                type,
-                predicateCombobox.getValue().getUri()
+    private FileTriple getFileTriple() {
+        return new FileTriple(
+                fineName_field.getText(),
+                predicateCombobox.getValue(),
+                anotherResourceCombobox.getValue()
         );
-        List<GraphItem> anotherResItems = httpService.resourcesForClasses(objectClassesUri);
-
-        ObservableList<GraphItem> anotherResources = FXCollections.observableArrayList(anotherResItems);
-        anotherResourceCombobox.setItems(anotherResources);
-        anotherResourceCombobox.getSelectionModel().selectFirst();
     }
 
-    private FileType findType() {
-        String extension = fileService.extractExtension(fineName_field.getText());
-        return graphService.findFileType(extension);
+    public void setup(String filePath) {
+        FileResourceGuiData guiData = userResourceService.initGuiData(filePath);
+        assignGuiData(guiData);
     }
 
-    private void setPredicatesForType(FileType type) {
-        List<GraphItem> items = graphService.findPredicatesForType(type);
-
-        ObservableList<GraphItem> predicates = FXCollections.observableArrayList(items);
-
-        predicateCombobox.setItems(predicates);
-        predicateCombobox.getSelectionModel().selectFirst();
-    }
-
-    public void assignFilePath(String firstParam) {
-        setFileField(firstParam);
-        determineFileType();
+    private void assignGuiData(FileResourceGuiData data) {
+        fineName_field.setText(data.getTriple().getFilePath());
+        fileType.setText(data.getFileType().getTitle());
+        predicateCombobox.setItems(FXCollections.observableArrayList(data.getPredicates()));
+        predicateCombobox.getSelectionModel().select(data.getTriple().getPredicate());
+        anotherResourceCombobox.setItems(FXCollections.observableArrayList(data.getObjects()));
+        anotherResourceCombobox.getSelectionModel().select(data.getTriple().getObject());
     }
 }
