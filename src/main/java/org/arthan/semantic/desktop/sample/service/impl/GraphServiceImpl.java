@@ -1,31 +1,36 @@
-package org.arthan.semantic.desktop.sample;
+package org.arthan.semantic.desktop.sample.service.impl;
 
 import com.google.common.collect.Lists;
+import com.google.inject.Singleton;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntProperty;
 import com.hp.hpl.jena.ontology.OntResource;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
+import org.arthan.semantic.desktop.sample.FileType;
 import org.arthan.semantic.desktop.sample.model.GraphItem;
 import org.arthan.semantic.desktop.sample.model.Props;
+import org.arthan.semantic.desktop.sample.service.FileService;
+import org.arthan.semantic.desktop.sample.service.GraphService;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Created by artur.shamsiev on 27.05.2015
+ * Created by artur.shamsiev on 02.06.2015
  */
-public class GraphUtils {
 
+@Singleton
+public class GraphServiceImpl implements GraphService {
     public static final String FILE_EXTENSION_CLASS_URI = "http://artur.lazy-magister.org/types/meta/fileExtension";
-    private static OntModel ontModel;
 
-    static {
-        ontModel = ModelFactory.createOntologyModel();
-        ontModel.read(FileUtils.ontologyInputStream(), null);
+    private OntModel ontModel;
+
+    @Inject
+    public GraphServiceImpl(OntModel ontModel) {
+        this.ontModel = ontModel;
     }
 
     /**
@@ -33,7 +38,8 @@ public class GraphUtils {
      * @param type класс домена для предикатов
      * @return список предикатов для {@code type}
      */
-    public static List<GraphItem> findPredicatesForType(FileType type) {
+    @Override
+    public List<GraphItem> findPredicatesForType(FileType type) {
         List<GraphItem> resultList;
 
         OntClass fileClass = type.getTargetType();
@@ -46,15 +52,15 @@ public class GraphUtils {
         return resultList;
     }
 
-    private static List<OntProperty> findPropertiesForDomain(OntClass fileClass) {
+    private List<OntProperty> findPropertiesForDomain(OntClass fileClass) {
         List<OntProperty> allProperties = Lists.newArrayList(ontModel.listAllOntProperties());
 
         return allProperties.stream()
-            .filter(input -> {
-                List<OntResource> domains = Lists.newArrayList(input.listDomain());
-                return domains.stream()
-                        .anyMatch(d -> fileClass.getURI().equals(d.getURI()));
-            }).collect(Collectors.toList());
+                .filter(input -> {
+                    List<OntResource> domains = Lists.newArrayList(input.listDomain());
+                    return domains.stream()
+                            .anyMatch(d -> fileClass.getURI().equals(d.getURI()));
+                }).collect(Collectors.toList());
     }
 
     /**
@@ -64,7 +70,8 @@ public class GraphUtils {
      * @param predicateURI uri предиката
      * @return список uri классов тех ресурсов, которые могут служить в качестве объекта в триплете
      */
-    public static List<String> findObjectClassesFor(FileType type, String predicateURI) {
+    @Override
+    public List<String> findObjectClassesFor(FileType type, String predicateURI) {
         OntClass fileClass = type.getTargetType();
 
         List<OntProperty> propsForDomain = findPropertiesForDomain(fileClass);
@@ -79,9 +86,10 @@ public class GraphUtils {
     /**
      * Находит ресурс типа fileExtension соответствующего параметру {@code fileExtension}
      * @param fileExtension расширение файла
-     * @return объект {@link FileType}
+     * @return объект {@link org.arthan.semantic.desktop.sample.FileType}
      */
-    public static FileType findFileType(String fileExtension) {
+    @Override
+    public FileType findFileType(String fileExtension) {
         OntClass extClass = ontModel.getOntClass(FILE_EXTENSION_CLASS_URI);
         ArrayList<OntResource> extensions = Lists.newArrayList(extClass.listInstances(true));
         List<OntResource> foundExtensions = extensions.stream()
@@ -103,5 +111,4 @@ public class GraphUtils {
                 ontClass
         );
     }
-
 }

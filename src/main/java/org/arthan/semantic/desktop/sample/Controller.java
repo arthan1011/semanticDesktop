@@ -1,5 +1,6 @@
 package org.arthan.semantic.desktop.sample;
 
+import com.google.inject.name.Named;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -8,13 +9,30 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import org.arthan.semantic.desktop.sample.model.GraphItem;
+import org.arthan.semantic.desktop.sample.service.FileService;
+import org.arthan.semantic.desktop.sample.service.GraphService;
+import org.arthan.semantic.desktop.sample.service.HttpService;
 import org.arthan.semantic.desktop.sample.utils.AlertUtils;
 import org.arthan.semantic.desktop.sample.utils.JsonUtils;
 
+import javax.inject.Inject;
 import java.util.List;
 
 public class Controller {
     public static final String USER_HOME = System.getProperty("user.home");
+
+    GraphService graphService;
+
+    FileService fileService;
+
+    HttpService httpService;
+
+    @Inject
+    public Controller(GraphService graphService, FileService fileService, HttpService httpService) {
+        this.graphService = graphService;
+        this.fileService = fileService;
+        this.httpService = httpService;
+    }
 
     @FXML
     private Text welcome_text;
@@ -40,7 +58,7 @@ public class Controller {
     }
 
     private String addFile() {
-        return HttpUtils.addFile(
+        return httpService.addFile(
                 fineName_field.getText(),
                 predicateCombobox.getValue().getUri(),
                 anotherResourceCombobox.getValue().getUri()
@@ -73,11 +91,11 @@ public class Controller {
     }
 
     private void setAnotherResourceForType(FileType type) {
-        List<String> objectClassesUri = GraphUtils.findObjectClassesFor(
+        List<String> objectClassesUri = graphService.findObjectClassesFor(
                 type,
                 predicateCombobox.getValue().getUri()
         );
-        List<GraphItem> anotherResItems = HttpUtils.resourcesForClasses(objectClassesUri);
+        List<GraphItem> anotherResItems = httpService.resourcesForClasses(objectClassesUri);
 
         ObservableList<GraphItem> anotherResources = FXCollections.observableArrayList(anotherResItems);
         anotherResourceCombobox.setItems(anotherResources);
@@ -85,13 +103,12 @@ public class Controller {
     }
 
     private FileType findType() {
-        String extension = FileUtils.extractExtension(fineName_field.getText());
-        return GraphUtils.findFileType(extension);
+        String extension = fileService.extractExtension(fineName_field.getText());
+        return graphService.findFileType(extension);
     }
 
     private void setPredicatesForType(FileType type) {
-
-        List<GraphItem> items = GraphUtils.findPredicatesForType(type);
+        List<GraphItem> items = graphService.findPredicatesForType(type);
 
         ObservableList<GraphItem> predicates = FXCollections.observableArrayList(items);
 

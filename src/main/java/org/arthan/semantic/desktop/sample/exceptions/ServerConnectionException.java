@@ -1,4 +1,4 @@
-package org.arthan.semantic.desktop.sample.extensions;
+package org.arthan.semantic.desktop.sample.exceptions;
 
 /**
  * Created by Arthur Shamsiev on 29.05.15.

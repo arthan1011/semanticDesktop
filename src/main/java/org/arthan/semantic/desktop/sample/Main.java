@@ -1,12 +1,16 @@
 package org.arthan.semantic.desktop.sample;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.arthan.semantic.desktop.sample.extensions.ServerConnectionException;
+import org.arthan.semantic.desktop.sample.exceptions.ServerConnectionException;
+import org.arthan.semantic.desktop.sample.inject.DesktopModule;
 import org.arthan.semantic.desktop.sample.utils.AlertUtils;
 
 import java.net.URL;
@@ -55,8 +59,9 @@ public class Main extends Application {
     }
 
     private void initLoader() {
+        Injector injector = Guice.createInjector(new DesktopModule());
         URL fxmlUrl = getClass().getResource(FXML_PATH);
-        fxmlLoader = new FXMLLoader(fxmlUrl);
+        fxmlLoader = new FXMLLoader(fxmlUrl, null, new JavaFXBuilderFactory(), injector::getInstance);
     }
 
 
