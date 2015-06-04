@@ -140,11 +140,20 @@
     <rdfs:range rdf:resource="http://artur.lazy-magister.org/types/contact" />
   </owl:ObjectProperty>
 
-  <!-- Image prop -->
+  <!-- Image_of prop -->
   <owl:ObjectProperty rdf:about="http://artur.lazy-magister.org/properties#IMAGE_OF">
     <rdfs:label>Кто изображен</rdfs:label>
     <rdfs:domain rdf:resource="http://artur.lazy-magister.org/types/picture"/>
     <rdfs:range rdf:resource="http://artur.lazy-magister.org/types/contact"/>
+    <arlm:reverseProp rdf:resource="http://artur.lazy-magister.org/properties#IMAGE" />
+  </owl:ObjectProperty>
+
+  <!--Image prop-->
+  <owl:ObjectProperty rdf:about="http://artur.lazy-magister.org/properties#IMAGE">
+    <rdfs:label>Кто изображен</rdfs:label>
+    <rdfs:domain rdf:resource="http://artur.lazy-magister.org/types/contact"/>
+    <rdfs:range rdf:resource="http://artur.lazy-magister.org/types/picture"/>
+    <arlm:reverseProp rdf:resource="http://artur.lazy-magister.org/properties#IMAGE_OF" />
   </owl:ObjectProperty>
 
   <!-- Email prop -->
