@@ -90,14 +90,15 @@ public class GraphServiceImpl implements GraphService {
      */
     @Override
     public FileType findFileType(String fileExtension) {
+        String extension = fileExtension.toLowerCase();
         OntClass extClass = ontModel.getOntClass(FILE_EXTENSION_CLASS_URI);
         ArrayList<OntResource> extensions = Lists.newArrayList(extClass.listInstances(true));
         List<OntResource> foundExtensions = extensions.stream()
                 .filter(input ->
-                        input.getPropertyValue(Props.fileExtension).toString().equals(fileExtension))
+                        input.getPropertyValue(Props.fileExtension).toString().equals(extension))
                 .collect(Collectors.toList());
         if (foundExtensions.size() != 1) {
-            throw new RuntimeException("Не могу найти единственный ресурс для " + fileExtension);
+            throw new RuntimeException("Не могу найти единственный ресурс для " + extension);
         }
 
         return resourceToFileType(foundExtensions.get(0));
