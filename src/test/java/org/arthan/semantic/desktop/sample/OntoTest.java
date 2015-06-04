@@ -78,7 +78,8 @@ public class OntoTest {
                 .forEach(input -> System.out.println(input.getPropertyValue(
                         Props.fileExtension
                 )));
-
+        OntProperty ontProperty = model.getOntProperty("http://artur.lazy-magister.org/properties#IMAGE_OF");
+        System.out.println(ontProperty.getURI());
 
     }
 }

@@ -131,13 +131,32 @@
     <rdfs:domain rdf:resource="http://artur.lazy-magister.org/types/document" />
     <rdfs:domain rdf:resource="http://artur.lazy-magister.org/types/picture" />
     <rdfs:range rdf:resource="http://artur.lazy-magister.org/types/contact" />
+    <arlm:reverseProp rdf:resource="http://artur.lazy-magister.org/properties#PRODUCT" />
   </owl:ObjectProperty>
 
-  <!--Like prop-->
+  <!--Create prop-->
+  <owl:ObjectProperty rdf:about="http://artur.lazy-magister.org/properties#PRODUCT">
+    <rdfs:label>Что создано</rdfs:label>
+    <rdfs:range rdf:resource="http://artur.lazy-magister.org/types/document" />
+    <rdfs:range rdf:resource="http://artur.lazy-magister.org/types/picture" />
+    <rdfs:domain rdf:resource="http://artur.lazy-magister.org/types/contact" />
+    <arlm:reverseProp rdf:resource="http://purl.org/dc/elements/1.1/creator" />
+  </owl:ObjectProperty>
+
+  <!--Liked_by prop-->
   <owl:ObjectProperty rdf:about="http://artur.lazy-magister.org/properties#LIKED_BY">
     <rdfs:label>Кому нравится</rdfs:label>
     <rdfs:domain rdf:resource="http://artur.lazy-magister.org/types/music" />
     <rdfs:range rdf:resource="http://artur.lazy-magister.org/types/contact" />
+    <arlm:reverseProp rdf:resource="http://artur.lazy-magister.org/properties#LIKED" />
+  </owl:ObjectProperty>
+
+  <!--Like prop-->
+  <owl:ObjectProperty rdf:about="http://artur.lazy-magister.org/properties#LIKED">
+    <rdfs:label>Что нравится</rdfs:label>
+    <rdfs:range rdf:resource="http://artur.lazy-magister.org/types/music" />
+    <rdfs:domain rdf:resource="http://artur.lazy-magister.org/types/contact" />
+    <arlm:reverseProp rdf:resource="http://artur.lazy-magister.org/properties#LIKED_BY" />
   </owl:ObjectProperty>
 
   <!-- Image_of prop -->
@@ -150,7 +169,7 @@
 
   <!--Image prop-->
   <owl:ObjectProperty rdf:about="http://artur.lazy-magister.org/properties#IMAGE">
-    <rdfs:label>Кто изображен</rdfs:label>
+    <rdfs:label>Где изображен</rdfs:label>
     <rdfs:domain rdf:resource="http://artur.lazy-magister.org/types/contact"/>
     <rdfs:range rdf:resource="http://artur.lazy-magister.org/types/picture"/>
     <arlm:reverseProp rdf:resource="http://artur.lazy-magister.org/properties#IMAGE_OF" />
