@@ -62,7 +62,7 @@
   <!--DOC res-->
   <rdf:Description about="http://artur.lazy-magister.org/meta/fileExtension/doc">
     <rdf:type rdf:resource="http://artur.lazy-magister.org/types/meta/fileExtension" />
-    <arlm:fileExtension>docx</arlm:fileExtension>
+    <arlm:fileExtension>doc</arlm:fileExtension>
     <rdfs:label>Документ DOC</rdfs:label>
     <arlm:forType rdf:resource="http://artur.lazy-magister.org/types/document" />
   </rdf:Description>
