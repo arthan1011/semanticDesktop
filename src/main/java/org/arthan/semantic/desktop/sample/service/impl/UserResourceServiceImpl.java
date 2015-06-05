@@ -1,6 +1,7 @@
 package org.arthan.semantic.desktop.sample.service.impl;
 
 import org.arthan.semantic.desktop.sample.FileType;
+import org.arthan.semantic.desktop.sample.exceptions.NotSupportedFileTypeException;
 import org.arthan.semantic.desktop.sample.model.FileResourceGuiData;
 import org.arthan.semantic.desktop.sample.model.FileTriple;
 import org.arthan.semantic.desktop.sample.model.GraphItem;
@@ -11,6 +12,7 @@ import org.arthan.semantic.desktop.sample.service.UserResourceService;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by artur.shamsiev on 02.06.2015
@@ -29,8 +31,8 @@ public class UserResourceServiceImpl implements UserResourceService {
     }
 
     @Override
-    public FileResourceGuiData initGuiData(String filePath) {
-        FileType fileType = graphService.findFileType(fileService.extractExtension(filePath));
+    public FileResourceGuiData initGuiData(String filePath) throws NotSupportedFileTypeException {
+        FileType fileType = findFileType(filePath);
 
         List<GraphItem> predicates = graphService.findPredicatesForType(fileType);
         GraphItem defaultPredicate = predicates.get(0);
@@ -49,6 +51,14 @@ public class UserResourceServiceImpl implements UserResourceService {
                 .build();
 
         return guiData;
+    }
+
+    private FileType findFileType(String filePath) throws NotSupportedFileTypeException {
+        Optional<FileType> optionalType = graphService.findFileType(fileService.extractExtension(filePath));
+        if (!optionalType.isPresent()) {
+            throw new NotSupportedFileTypeException();
+        }
+        return optionalType.get();
     }
 
     @Override

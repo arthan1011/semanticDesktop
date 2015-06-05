@@ -16,6 +16,7 @@ import org.arthan.semantic.desktop.sample.service.GraphService;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -89,7 +90,7 @@ public class GraphServiceImpl implements GraphService {
      * @return объект {@link org.arthan.semantic.desktop.sample.FileType}
      */
     @Override
-    public FileType findFileType(String fileExtension) {
+    public Optional<FileType> findFileType(String fileExtension) {
         String extension = fileExtension.toLowerCase();
         OntClass extClass = ontModel.getOntClass(FILE_EXTENSION_CLASS_URI);
         ArrayList<OntResource> extensions = Lists.newArrayList(extClass.listInstances(true));
@@ -98,10 +99,10 @@ public class GraphServiceImpl implements GraphService {
                         input.getPropertyValue(Props.fileExtension).toString().equals(extension))
                 .collect(Collectors.toList());
         if (foundExtensions.size() != 1) {
-            throw new RuntimeException("Не могу найти единственный ресурс для " + extension);
+            return Optional.empty();
         }
 
-        return resourceToFileType(foundExtensions.get(0));
+        return Optional.of(resourceToFileType(foundExtensions.get(0)));
     }
 
     private static FileType resourceToFileType(OntResource resource) {

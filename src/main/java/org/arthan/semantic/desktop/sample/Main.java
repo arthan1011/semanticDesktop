@@ -9,6 +9,7 @@ import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.arthan.semantic.desktop.sample.exceptions.NotSupportedFileTypeException;
 import org.arthan.semantic.desktop.sample.exceptions.ServerConnectionException;
 import org.arthan.semantic.desktop.sample.inject.DesktopModule;
 import org.arthan.semantic.desktop.sample.utils.AlertUtils;
@@ -51,7 +52,12 @@ public class Main extends Application {
 
     private void setup() {
         String firstParam = getParameters().getUnnamed().get(0);
-        controller.setup(firstParam);
+        try {
+            controller.setup(firstParam);
+        } catch (NotSupportedFileTypeException e) {
+            AlertUtils.showNotSupportedFileType();
+            Platform.exit();
+        }
     }
 
     private void initController() {

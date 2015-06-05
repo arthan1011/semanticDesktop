@@ -6,11 +6,11 @@ import javafx.scene.control.Alert;
  * Created by artur.shamsiev on 29.05.2015
  */
 public class AlertUtils {
-    public static void showNotInHomeAlert() {
+    private static void error(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Ошибка");
         alert.setHeaderText(null);
-        alert.setContentText("Можно добавлять файлы только из домашнего каталога");
+        alert.setContentText(message);
 
         alert.showAndWait();
     }
@@ -24,12 +24,15 @@ public class AlertUtils {
         alert.showAndWait();
     }
 
-    public static void showNoServerConnection() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Ошибка");
-        alert.setHeaderText(null);
-        alert.setContentText("Не могу подключиться к серверу");
+    public static void showNotInHomeAlert() {
+        error("Можно добавлять файлы только из домашнего каталога");
+    }
 
-        alert.showAndWait();
+    public static void showNoServerConnection() {
+        error("Не могу подключиться к серверу");
+    }
+
+    public static void showNotSupportedFileType() {
+        error("Тип файла не поддерживается");
     }
 }
